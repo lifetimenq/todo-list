@@ -21,23 +21,23 @@
               <div class="card-body">
                 <h5 class="card-title">Add new task</h5>
                 <form name="addTask">
-                  <input
-                    type="text"
-                    name="title"
-                    id="title"
-                    class="form-control"
-                    placeholder="Task title"
-                  />
-                  <input
-                    type="text"
-                    name="body"
-                    id="body"
-                    class="form-control mt-3"
-                    placeholder="Task body"
-                  />
-                  <button type="submit" class="btn btn-primary mt-4">
-                    Add task
-                  </button>
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            id="title"
+                            class="form-control"
+                            placeholder="Task title"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="body">Body</label>
+                        <textarea rows="3" name="body" id="body" class="form-control" placeholder="Task body"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4">
+                        Add task
+                    </button>
                 </form>
               </div>
             </div>
