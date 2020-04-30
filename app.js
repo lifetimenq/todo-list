@@ -32,6 +32,56 @@ const tasks = [
 ];
 
 (function(arrOfTasks) {
-    console.log(arrOfTasks);
+    // objects
+    const objOfTasks = arrOfTasks.reduce((acc, task) => {
+        acc[task._id] = task;
+        return acc;
+    }, {});
 
+    // Element UI
+    const listContainer = document.querySelector(".tasks-list-section .list-group");
+    
+    
+    renderAllTasks(objOfTasks);
+    
+    function renderAllTasks(tasksList) {
+        if (!tasksList) {
+            console.error("nothing to show");
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        
+        Object.values(tasksList).forEach(task => {
+            const li = listItemTemplate(task);
+            fragment.appendChild(li);
+        });
+        
+        listContainer.appendChild(fragment);
+    }
+
+
+    // template function
+    function listItemTemplate({ _id, title, body } = {}) {
+        const li = document.createElement('li');
+        li.classList.add("list-group-item", "d-flex", "align-items-center", "flex-wrap", "mt-2");
+
+        const span = document.createElement('span');
+        span.textContent = title;
+        span.style.fontWeight = 'bold';
+
+        const button = document.createElement('button');
+        button.classList.add("btn", "btn-danger", "ml-auto", "delete-btn");
+        button.textContent = "Delete";
+
+        const p = document.createElement("p");
+        p.classList.add("mt-2", "w-100");
+        p.textContent = body;
+
+        li.appendChild(span);
+        li.appendChild(button);
+        li.appendChild(p);
+
+        return li;
+    }
 })(tasks);
