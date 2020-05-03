@@ -110,12 +110,15 @@ const tasks = [
     const form = document.forms['addTask'];
     const inputTitle = form.elements['title'];
     const inputBody = form.elements['body'];
-    
+    const themeSelect = document.getElementById("themeSelect")
+
     // Events
     renderAllTasks(objOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
     listContainer.addEventListener('click', onDeleteHandler);
+    themeSelect.addEventListener('change', onChangeTheme);
     
+
     function renderAllTasks(tasksList) {
         if (!tasksList) {
             console.error("nothing to show");
@@ -153,8 +156,21 @@ const tasks = [
         deleteHtmlElement(confirmed, parent);
       }      
     }
+    
+    function onChangeTheme(e) {
+      setTheme(e.target.value);
+    }
+
+
 
     // func
+    function setTheme(name) {
+      const selected = themes[name];
+      Object.entries(selected).forEach(([key, value]) => {
+        document.documentElement.style.setProperty(key, value);
+      })
+    }
+
     function addTask(title, body) {                
         const task = {
             _id: `task-${Math.random()}`,
