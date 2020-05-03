@@ -110,7 +110,7 @@ const tasks = [
     const form = document.forms['addTask'];
     const inputTitle = form.elements['title'];
     const inputBody = form.elements['body'];
-    const themeSelect = document.getElementById("themeSelect")
+    const themeSelect = document.getElementById("themeSelect");
 
     // Events
     renderAllTasks(objOfTasks);
