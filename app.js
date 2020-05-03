@@ -47,6 +47,7 @@ const tasks = [
     // Events
     renderAllTasks(objOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
+    listContainer.addEventListener('click', onDeleteHandler);
     
     function renderAllTasks(tasksList) {
         if (!tasksList) {
@@ -77,6 +78,16 @@ const tasks = [
         form.reset();        
     }
 
+    function onDeleteHandler({ target }) {
+      if(target.classList.contains('delete-btn')) {
+        const parent = target.closest('[data-task-id]');
+        
+        const confirmed = deleteTask(parent.dataset.taskId);
+        deleteHtmlElement(confirmed, parent);
+      }      
+    }
+
+    // func
     function addTask(title, body) {                
         const task = {
             _id: `task-${Math.random()}`,
@@ -89,10 +100,24 @@ const tasks = [
         return { ...task };
     }
 
+    function deleteHtmlElement(confirmed, element) {
+      if (!confirmed) return;
+      element.remove();
+    }
+
+    function deleteTask(id) {
+      const { title } = objOfTasks[id];
+      const isConfirm = confirm(`Delete task "${title}"?`);
+      if (!isConfirm) return isConfirm;
+      delete objOfTasks[id];
+      return isConfirm;
+    }
+
     // template function
     function listItemTemplate({ _id, title, body } = {}) {
         const li = document.createElement('li');
         li.classList.add("list-group-item", "d-flex", "align-items-center", "flex-wrap", "mt-2");
+        li.setAttribute("data-task-id", _id);
 
         const span = document.createElement('span');
         span.textContent = title;
