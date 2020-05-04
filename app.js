@@ -120,9 +120,9 @@ const tasks = [
     
 
     function renderAllTasks(tasksList) {
-        if (!tasksList) {
-            console.error("nothing to show");
-            return;
+        if (isEmpty(objOfTasks)) {          
+          listContainer.appendChild(emptyListTemplate());
+          return;
         }
 
         const fragment = document.createDocumentFragment();
@@ -141,6 +141,10 @@ const tasks = [
             alert('Please input title and body!');
             return;
         }
+        const element = document.querySelector(".empty-list-group");
+        if (element) {
+          element.remove();
+        }
         
         task = addTask(inputTitle.value, inputBody.value);
         const li = listItemTemplate(task);
@@ -154,6 +158,10 @@ const tasks = [
         
         const confirmed = deleteTask(parent.dataset.taskId);
         deleteHtmlElement(confirmed, parent);
+        if (isEmpty(objOfTasks)) {          
+          listContainer.appendChild(emptyListTemplate());
+          return;
+        }
       }      
     }
     
@@ -196,6 +204,10 @@ const tasks = [
       return isConfirm;
     }
 
+    function isEmpty(obj) {
+      return Object.keys(obj).length === 0;
+    }
+
     // template function
     function listItemTemplate({ _id, title, body } = {}) {
         const li = document.createElement('li');
@@ -219,5 +231,18 @@ const tasks = [
         li.appendChild(p);
 
         return li;
+    }
+
+    function emptyListTemplate() {
+      const li = document.createElement('li');
+      li.classList.add("list-group-item", "empty-list-group", "d-flex", "align-items-center", "flex-wrap", "mt-2");
+      li.setAttribute("data-empty", "empty");
+
+      const span = document.createElement('span');
+      span.textContent = "Nothing to show.";
+      span.style.fontWeight = 'bold';
+      li.appendChild(span);
+      
+      return li
     }
 })(tasks);
