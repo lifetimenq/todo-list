@@ -116,6 +116,7 @@ const tasks = [
     renderAllTasks(objOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
     listContainer.addEventListener('click', onDeleteHandler);
+    listContainer.addEventListener('click', onCompleteHandler);
     themeSelect.addEventListener('change', onChangeTheme);
     
 
@@ -164,6 +165,16 @@ const tasks = [
         }
       }      
     }
+
+    function onCompleteHandler({ target }) {
+      if(target.classList.contains('complete-btn')) {
+        
+        const parent = target.closest('[data-task-id]');
+        completeTask(parent);
+        
+      
+      }      
+    }
     
     function onChangeTheme(e) {
       setTheme(e.target.value);
@@ -172,6 +183,16 @@ const tasks = [
 
 
     // func
+    function completeTask(parent) {   
+      id = parent.dataset.taskId;   
+      if (!objOfTasks[id].completed) {
+        objOfTasks[id].completed = true;
+      }
+      parent.style.setProperty('background', '#b7e6a4');
+      console.log(parent);
+      
+    }
+
     function setTheme(name) {
       const selected = themes[name];
       Object.entries(selected).forEach(([key, value]) => {
@@ -209,7 +230,7 @@ const tasks = [
     }
 
     // template function
-    function listItemTemplate({ _id, title, body } = {}) {
+    function listItemTemplate({ _id, title, body, completed } = {}) {
         const li = document.createElement('li');
         li.classList.add("list-group-item", "d-flex", "align-items-center", "flex-wrap", "mt-2");
         li.setAttribute("data-task-id", _id);
@@ -218,18 +239,30 @@ const tasks = [
         span.textContent = title;
         span.style.fontWeight = 'bold';
 
-        const button = document.createElement('button');
-        button.classList.add("btn", "btn-danger", "ml-auto", "delete-btn");
-        button.textContent = "Delete";
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add("ml-auto");
+
+        const completeButton = document.createElement('button');
+        completeButton.classList.add("btn", "btn-primary", "complete-btn");
+        completeButton.textContent = "Complete";
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add("ml-1", "btn", "btn-danger", "delete-btn");
+        deleteButton.textContent = "Delete";
 
         const p = document.createElement("p");
         p.classList.add("mt-2", "w-100");
         p.textContent = body;
 
         li.appendChild(span);
-        li.appendChild(button);
+        buttonsDiv.appendChild(completeButton);
+        buttonsDiv.appendChild(deleteButton);
+        li.appendChild(buttonsDiv);
         li.appendChild(p);
 
+        if (completed) {
+          li.style.setProperty("background", "#b7e6a4");
+        }
         return li;
     }
 
