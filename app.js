@@ -111,29 +111,48 @@ const tasks = [
     const inputTitle = form.elements['title'];
     const inputBody = form.elements['body'];
     const themeSelect = document.getElementById("themeSelect");
+    const allTasks = document.querySelector('.all-tasks-btn');
+    const uncompleteTasks = document.querySelector('.uncomplete-btn');
 
     // Events
-    renderAllTasks(objOfTasks);
+    renderTasks(objOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
     listContainer.addEventListener('click', onDeleteHandler);
     listContainer.addEventListener('click', onCompleteHandler);
     themeSelect.addEventListener('change', onChangeTheme);
+    allTasks.addEventListener('click', renderTasksHandler);
+    uncompleteTasks.addEventListener('click', renderTasksHandler);
     
 
-    function renderAllTasks(tasksList) {
-        if (isEmpty(objOfTasks)) {          
+    function renderTasks(tasksList, filter = 'all') {        
+        if (isEmpty(tasksList)) {          
           listContainer.appendChild(emptyListTemplate());
           return;
         }
-
-        const fragment = document.createDocumentFragment();
+        let tasks = Object.values(tasksList);
         
-        Object.values(tasksList).forEach(task => {
+        if (filter == 'uncomplete') {
+          tasks = Object.values(tasksList).filter(task => !task.completed);
+        }
+        const list = document.querySelector(".list-group");
+        list.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        console.log(tasks);
+        tasks.forEach(task => {
             const li = listItemTemplate(task);
             fragment.appendChild(li);
         });
         
         listContainer.appendChild(fragment);
+    }
+
+    function renderTasksHandler({ target }) {
+      if(target.classList.contains('all-tasks-btn')) {        
+        renderTasks(objOfTasks);
+      }
+      if(target.classList.contains('uncomplete-btn')) {
+        renderTasks(objOfTasks, 'uncomplete');
+      }
     }
     
     function onFormSubmitHandler(e) {
