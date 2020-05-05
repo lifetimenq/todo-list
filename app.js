@@ -119,11 +119,11 @@ const tasks = [
     form.addEventListener('submit', onFormSubmitHandler);
     listContainer.addEventListener('click', onDeleteHandler);
     listContainer.addEventListener('click', onCompleteHandler);
+    listContainer.addEventListener('click', onRestoreHandler);
     themeSelect.addEventListener('change', onChangeTheme);
     allTasks.addEventListener('click', renderTasksHandler);
     uncompleteTasks.addEventListener('click', renderTasksHandler);
     
-
     function renderTasks(tasksList, filter = 'all') {        
         if (isEmpty(tasksList)) {          
           listContainer.appendChild(emptyListTemplate());
@@ -132,12 +132,18 @@ const tasks = [
         let tasks = Object.values(tasksList);
         
         if (filter == 'uncomplete') {
-          tasks = Object.values(tasksList).filter(task => !task.completed);
+          tasks = Object.values(tasksList).filter(task => !task.completed);          
         }
         const list = document.querySelector(".list-group");
         list.innerHTML = '';
         const fragment = document.createDocumentFragment();
-        console.log(tasks);
+        tasks.sort((a, b) => {
+          if (a.completed > b.completed)
+            return 1;
+          if (a.completed < b.completed)
+            return -1;
+          return 0;  
+        })
         tasks.forEach(task => {
             const li = listItemTemplate(task);
             fragment.appendChild(li);
@@ -147,12 +153,21 @@ const tasks = [
     }
 
     function renderTasksHandler({ target }) {
-      if(target.classList.contains('all-tasks-btn')) {        
+      if(target.classList.contains('all-tasks-btn')) {     
         renderTasks(objOfTasks);
+        uncompleteTasks.classList.remove('btn-info');
+        uncompleteTasks.classList.add('btn-light');
+        target.classList.remove('btn-light');
+        target.classList.add('btn-info');
       }
       if(target.classList.contains('uncomplete-btn')) {
         renderTasks(objOfTasks, 'uncomplete');
+        allTasks.classList.remove('btn-info');
+        allTasks.classList.add('btn-light');
+        target.classList.remove('btn-light');
+        target.classList.add('btn-info');
       }
+
     }
     
     function onFormSubmitHandler(e) {
@@ -190,26 +205,44 @@ const tasks = [
         
         const parent = target.closest('[data-task-id]');
         completeTask(parent);
-        
       
       }      
+    }
+
+    function onRestoreHandler({ target }) {
+      if(target.classList.contains('restore-btn')) {
+        
+        const parent = target.closest('[data-task-id]');
+        restoreTask(parent);
+      
+      }  
     }
     
     function onChangeTheme(e) {
       setTheme(e.target.value);
     }
 
-
-
     // func
+    function restoreTask(parent) {
+      id = parent.dataset.taskId;   
+      if (objOfTasks[id].completed) {
+        objOfTasks[id].completed = false;
+      }
+      parent.style.removeProperty('background', null);
+      renderTasks(objOfTasks);
+    }
+
     function completeTask(parent) {   
       id = parent.dataset.taskId;   
       if (!objOfTasks[id].completed) {
         objOfTasks[id].completed = true;
       }
       parent.style.setProperty('background', '#b7e6a4');
-      console.log(parent);
-      
+      const active = document.querySelector(".btn-info");
+      if (active.id == 'all-tasks')
+        renderTasks(objOfTasks);
+      if (active.id == 'uncomplete-tasks')
+        renderTasks(objOfTasks, 'uncomplete');      
     }
 
     function setTheme(name) {
@@ -265,6 +298,10 @@ const tasks = [
         completeButton.classList.add("btn", "btn-primary", "complete-btn");
         completeButton.textContent = "Complete";
 
+        const restoreButton = document.createElement('button');
+        restoreButton.classList.add("btn", "btn-primary", "restore-btn");
+        restoreButton.textContent = "Restore";
+
         const deleteButton = document.createElement('button');
         deleteButton.classList.add("ml-1", "btn", "btn-danger", "delete-btn");
         deleteButton.textContent = "Delete";
@@ -274,7 +311,11 @@ const tasks = [
         p.textContent = body;
 
         li.appendChild(span);
-        buttonsDiv.appendChild(completeButton);
+        if (completed) {
+          buttonsDiv.appendChild(restoreButton);
+        } else {
+          buttonsDiv.appendChild(completeButton);
+        }
         buttonsDiv.appendChild(deleteButton);
         li.appendChild(buttonsDiv);
         li.appendChild(p);
