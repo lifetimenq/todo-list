@@ -125,17 +125,19 @@ const tasks = [
     uncompleteTasks.addEventListener('click', renderTasksHandler);
     
     function renderTasks(tasksList, filter = 'all') {        
-        if (isEmpty(tasksList)) {          
-          listContainer.appendChild(emptyListTemplate());
-          return;
-        }
+        const list = document.querySelector(".list-group");
+        list.innerHTML = '';
+        
         let tasks = Object.values(tasksList);
         
         if (filter == 'uncomplete') {
           tasks = Object.values(tasksList).filter(task => !task.completed);          
         }
-        const list = document.querySelector(".list-group");
-        list.innerHTML = '';
+        if (isEmpty(tasks)) {          
+          listContainer.appendChild(emptyListTemplate());
+          return;
+        }
+
         const fragment = document.createDocumentFragment();
         tasks.sort((a, b) => {
           if (a.completed > b.completed)
@@ -336,6 +338,6 @@ const tasks = [
       span.style.fontWeight = 'bold';
       li.appendChild(span);
       
-      return li
+      return li;
     }
 })(tasks);
