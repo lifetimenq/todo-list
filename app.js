@@ -195,7 +195,11 @@ const tasks = [
         
         const confirmed = deleteTask(parent.dataset.taskId);
         deleteHtmlElement(confirmed, parent);
-        if (isEmpty(objOfTasks)) {          
+        let tasks = Object.values(objOfTasks);
+        if (uncompleteTasks.classList.contains('btn-info')) {
+          tasks = tasks.filter(task => !task.completed);
+        }
+        if (isEmpty(tasks)) {
           listContainer.appendChild(emptyListTemplate());
           return;
         }
