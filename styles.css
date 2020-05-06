@@ -30,6 +30,13 @@ body {
 .header .navbar-brand {
   color: var(--header-text-color) !important;
 }
+.footer {
+  height: 60px;
+  background: var(--header-bg) !important;
+}
+.footer a {
+  color: var(--header-text-color) !important;
+}
 
 .btn.btn-primary,
 .btn-primary:not(:disabled):not(.disabled):active {
