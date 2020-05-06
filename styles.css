@@ -35,6 +35,7 @@ body {
   background: var(--header-bg) !important;
 }
 .footer a {
+  text-decoration: underline;
   color: var(--header-text-color) !important;
 }
 
